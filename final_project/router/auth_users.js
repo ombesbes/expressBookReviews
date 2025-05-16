@@ -57,6 +57,12 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(201).json({message:"Review added successfully"})
     
   });
+
+  regd_users.delete("/auth/review/:isbn", (req, res) => {
+    let ISBN = req.params.isbn;
+    books[ISBN].reviews = {}
+    return res.status(200).json({messsage:"Review successfully deleted"})
+});
   
 
 module.exports.authenticated = regd_users;
