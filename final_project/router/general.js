@@ -30,13 +30,26 @@ public_users.post("/register", (req,res) => {
   });
 
 
-// Get the book list available in the shop
-public_users.get('/',async (req, res) => {
-    res.send(JSON.stringify(books,null,4));
-   
-  });
-  
-
+// without Promise Get the book list available in the shop
+// public_users.get('/',async (req, res) => {
+//     res.send(JSON.stringify(books,null,4));  
+//   });
+// using Promise callbacks Get the book list available in the shop
+public_users.get('/', (req, res) => {
+    new Promise((resolve, reject) => {
+        if (books) {
+            resolve(books);
+        } else {
+            reject("Error: Books list not available");
+        }
+    })
+    .then((bookList) => {
+        res.status(200).send(JSON.stringify(bookList, null, 4));
+    })
+    .catch((error) => {
+        res.status(500).json({ message: error });
+    });
+});
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', (req, res) =>{
