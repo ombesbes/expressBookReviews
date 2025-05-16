@@ -59,7 +59,7 @@ public_users.get('/isbn/:isbn', (req, res) => {
     const booksBasedOnIsbn = (ISBN) => {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                const book = books[ISBN]; // Assuming books is an object where ISBNs are keys
+                const book = books[ISBN]; 
                 if (book) {
                     resolve(book);
                 } else {
@@ -71,26 +71,46 @@ public_users.get('/isbn/:isbn', (req, res) => {
 
     booksBasedOnIsbn(ISBN)
         .then((book) => res.json(book))
-        .catch((err) => res.status(404).json({ error: err.message })); // Use 404 for not found
+        .catch((err) => res.status(404).json({ error: err.message })); 
 });
 
-
-
   
-// Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
+// not taking account of author not found Get book details based on author
+// public_users.get('/author/:author',function (req, res) {
+//   let new_books = {}
+//   const new_author = req.params.author;
+//   for(let bookid in books){
+//      if(books[bookid].author === new_author ){
+//        new_books= books[bookid];
+//      }
+//    }
+//     res.send(JSON.stringify(new_books));
+//});
 
-   let new_books = {}
-   const new_author = req.params.author;
-   for(let bookid in books){
-      if(books[bookid].author === new_author ){
-        new_books= books[bookid];
-      }
-    }
-     res.send(JSON.stringify(new_books));
-  
+
+//Get book details based on author
+public_users.get('/author/:author', (req, res) => {
+    const new_author = req.params.author;
+
+    const booksByAuthor = (author) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                let filteredBooks = Object.values(books).filter(book => book.author === author);
+                
+                if (filteredBooks.length > 0) {
+                    resolve(filteredBooks);
+                } else {
+                    reject(new Error("Author not found"));
+                }
+            }, 1000);
+        });
+    };
+
+    booksByAuthor(new_author)
+        .then((bookList) => res.json(bookList))
+        .catch((error) => res.status(404).json({ error: error.message }));
 });
+
 
 
 
