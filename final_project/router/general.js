@@ -34,6 +34,7 @@ public_users.post("/register", (req,res) => {
 // public_users.get('/',async (req, res) => {
 //     res.send(JSON.stringify(books,null,4));  
 //   });
+
 // using Promise callbacks Get the book list available in the shop
 public_users.get('/', (req, res) => {
     new Promise((resolve, reject) => {
@@ -52,30 +53,27 @@ public_users.get('/', (req, res) => {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', (req, res) =>{
-    
+public_users.get('/isbn/:isbn', (req, res) => {
     const ISBN = req.params.isbn;
+
     const booksBasedOnIsbn = (ISBN) => {
-        return new Promise((resolve,reject) =>{
-          setTimeout(() =>{
-            const book = books.find((b) => b.isbn === ISBN);
-            if(book){
-              resolve(book);
-            }else{
-              reject(new Error("Book not found"));
-            }},1000);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const book = books[ISBN]; // Assuming books is an object where ISBNs are keys
+                if (book) {
+                    resolve(book);
+                } else {
+                    reject(new Error("Book not found"));
+                }
+            }, 1000);
         });
-    
-            
-    }
-    booksBasedOnIsbn(ISBN).then((book) =>{
-      res.json(book);
-    }).catch((err)=>{
-      res.status(400).json({error:"Book not found"})
-    });
-     res.send(books[ISBN]);    
-   
-   });
+    };
+
+    booksBasedOnIsbn(ISBN)
+        .then((book) => res.json(book))
+        .catch((err) => res.status(404).json({ error: err.message })); // Use 404 for not found
+});
+
 
 
   
