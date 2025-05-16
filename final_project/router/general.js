@@ -111,21 +111,42 @@ public_users.get('/author/:author', (req, res) => {
         .catch((error) => res.status(404).json({ error: error.message }));
 });
 
-
-
-
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  let new_books = {}
-  const new_title = req.params.title;
-  for(let bookid in books){
-     if(books[bookid].title === new_title ){
-       new_books= books[bookid];
-     }
-   }
-    res.send(JSON.stringify(new_books));
+    const new_title = req.params.title;
+
+    const booksByTitle = (title) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                let filteredBooks = Object.values(books).filter(book => book.title === title);
+                
+                if (filteredBooks.length > 0) {
+                    resolve(filteredBooks);
+                } else {
+                    reject(new Error("Title not found"));
+                }
+            }, 1000);
+        });
+    };
+
+    booksByTitle(new_title)
+        .then((bookList) => res.json(bookList))
+        .catch((error) => res.status(404).json({ error: error.message }));
 });
+
+
+// not taking account of title not found Get all books based on title
+// public_users.get('/title/:title',function (req, res) {
+  //Write your code here
+//  let new_books = {}
+//  const new_title = req.params.title;
+//  for(let bookid in books){
+//     if(books[bookid].title === new_title ){
+//       new_books= books[bookid];
+//     }
+//   }
+//    res.send(JSON.stringify(new_books));
+//});
 
 
 //  Get book review
